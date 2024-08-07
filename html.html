@@ -10,11 +10,11 @@
     <p id="CASH"> money</p>
     <p id = "CURRENTSEED">WHEAT</p>
     <p id="SEEDINFO">cost: 1, gain: 1.5, time: 10s </p>
-    <button onclick="toggleseedmenu()">seed menu</button>
-    <div id="seedmenu" style="display: none;">
-        <h2>seed menu</h2>
-        <button onclick="toggleseedmenu()">close seed menu</button>
-        <button onclick="setseed('Wheat')">WHEAT</button>
+    <div id="game">
+        <div id="plots"></div>
+    </div>
+    <div class="seedswap">
+        <button id="Wheat"onclick="setseed('Wheat')">Wheat</button>
         <button id="Carrot"onclick="setseed('Carrot')">25 Cash</button>
         <button id="Corn" onclick="setseed('Corn')">50 Cash</button>
         <button id="Tomato"onclick="setseed('Tomato')">100 Cash</button>
@@ -22,20 +22,12 @@
         <button id="Lettuce"onclick="setseed('Lettuce')">250 Cash</button>
         <button id="Cucumber" onclick="setseed('Cucumber')">300 Cash</button>
     </div>
-    <div id="game">
-        <div id="shop">
-            <button onclick="toggleShop()">SHOP</button>
-        </div>
-        <div id="plots"></div>
-        
-    </div>
-    
-
-    <div id="shopMenu" style="display: none;">
+    <div id="shopMenu">
         <h2>Shop</h2>
-        <button onclick="toggleShop()">Close Shop</button>
         <button id="buyplotbtn" onclick="buyplot()">Buy plot 6 for 16</button>
         <button id="fertime" onclick="fertilizer('time')">Decrease growth time by 10% for $100 </button>
+        <button id="autohar" onclick="if(money > (aharvplots+2)*100 ){aharvplots += 1; money-=(aharvplots+2)*100;}; document.getElementById('CASH').innerText = `Money: ${money.toFixed(1)}`; document.getElementById('autohar').innerText = `Auto Harvest Plot ${aharvplots+2} for $${(aharvplots+2)*100};`"> Auto Harvest Plot 1</button>
+        <button id="autohartime" onclick="if (money>(1000/aharvtime)){aharvtime -= (aharvtime/10); money -= 1000/aharvtime;}; document.getElementById('autohartime').innerText = `Decrease Auto Harvest Time by 10 Percent: ${(1000/aharvtime).toFixed(1)} Money`;">Decrease Auto Harvest Time by 10 Percent: 100 Money</button>
     </div>
     
     <script src="script.js"></script>

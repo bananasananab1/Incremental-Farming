@@ -3,6 +3,8 @@ let currentSeed = { name: 'Wheat', cost: 1, gain: 1.5, time: 10000 };
 let money = 10000;
 let plotCount = 5;
 let timefert = 10;
+let aharvplots = -1
+let aharvtime = 10
 let ownedseeds = ["Wheat"];
 const seedDB = { 
     Wheat:     {name: 'Wheat',      cost: 1,  gain: 1.5,time: 10000, shopbuy: 0   },
@@ -18,8 +20,10 @@ const seedDB = {
 function setseed(name) {
     if (ownedseeds.includes(name)) {
         currentSeed = seedDB[name];
+        document.getElementById(name).innerText = name;
     } else if (money >= seedDB[name].shopbuy) {
         currentSeed = seedDB[name];
+        document.getElementById(name).innerText = name;
         money -= seedDB[name].shopbuy;
         ownedseeds.push(name);
     }
@@ -33,7 +37,7 @@ function fertilizer(type){
         money -= (1 / (timefert / 1000));
         timefert -= 1;
         document.getElementById("fertime").innerText = `Decrease growth time by 10% for $${(1 / (timefert / 1000)).toFixed(2)}`;
-        document.getElementById("CASH").innerText = `Money: ${money}`;
+        document.getElementById("CASH").innerText = `Money: ${money.toFixed(1)}`;
     } else if (timefert === 1) {
         document.getElementById("fertime").innerText = `MAXED AT 90% REDUCTION`;
     }
@@ -47,7 +51,7 @@ function initPlots() {
         plot.innerHTML = `<img src="images/question-mark.jpg" alt="Empty">
                           <div class="progress-bar"><div class="progress"></div></div>`;
         plot.onclick = () => plantSeed(i);
-        plots.push({ element: plot, planted: false, harvestTime: 0, PlantedWith: "empty" });
+        plots.push({ element: plot, planted: false, harvestTime: 0, PlantedWith: "empty" , harvestAble: false });
         plotsContainer.appendChild(plot);
     }
 }
@@ -55,7 +59,7 @@ function initPlots() {
 function plantSeed(index) {
     if (money >= currentSeed.cost && !plots[index].planted) {
         money -= currentSeed.cost;
-        document.getElementById("CASH").innerText = `Money: ${money}`;
+        document.getElementById("CASH").innerText = `Money: ${money.toFixed(1)}`;
         plots[index].planted = true;
         plots[index].PlantedWith = currentSeed.name;
         plots[index].harvestTime = Date.now() + (currentSeed.time / 10) * timefert;
@@ -79,6 +83,7 @@ function updateProgress(index) {
             plot.element.onclick = () => harvest(index);
             if (!plot.element.querySelector('.harvest-message')) {
                 const harvestMessage = document.createElement('div');
+                plot.harvestAble = true;
                 harvestMessage.className = 'harvest-message';
                 harvestMessage.innerText = 'Click to Harvest';
                 plot.element.appendChild(harvestMessage);
@@ -100,37 +105,36 @@ function buyplot() {
         plot.innerHTML = `<img src="images/question-mark.jpg" alt="Empty">
                           <div class="progress-bar"><div class="progress"></div></div>`;
         plot.onclick = () => plantSeed(plotIndex);
-        plots.push({ element: plot, planted: false, harvestTime: 0, PlantedWith: "empty" });
+        plots.push({ element: plot, planted: false, harvestTime: 0, PlantedWith: "empty", harvestAble: false});
         plotsContainer.appendChild(plot);
         
         plotCount += 1;
 
-        document.getElementById("CASH").innerText = `Money: ${money}`;
+        document.getElementById("CASH").innerText = `Money: ${money.toFixed(1)}`;
         document.getElementById("buyplotbtn").innerText = `Buy plot ${plotCount + 1} for ${(plotCount - 1) ** 2}`;
     }
 }
 
 
 function harvest(index) {
-    if (plots[index].planted) {
+    if (plots[index].planted === true && plots[index].harvestAble === true) {
         money += seedDB[plots[index].PlantedWith].gain;
-        document.getElementById("CASH").innerText = `Money: ${money}`;
+        document.getElementById("CASH").innerText = `Money: ${money.toFixed(1)}`;
         plots[index].planted = false;
         plots[index].PlantedWith = "empty";
+        plots[index].harvestAble = false;
         plots[index].element.innerHTML = `<img src="images/question-mark.jpg" alt="Empty">
                                           <div class="progress-bar"><div class="progress"></div></div>`;
         plots[index].element.onclick = () => plantSeed(index);
     }
 }
 
-function toggleShop() {
-    const shopMenu = document.getElementById('shopMenu');
-    shopMenu.style.display = shopMenu.style.display === 'none' ? 'block' : 'none';
-}
-
-function toggleseedmenu() {
-    const seedMenu = document.getElementById('seedmenu');
-    seedMenu.style.display = seedMenu.style.display === 'none' ? 'block' : 'none';
+function AutoHarvest(){
+    if (aharvplots === -1) {console.log("failed")}//if not auto harvest
+    for (let i = -1; i < aharvplots; i++) {
+        harvest(i+1);
+    }
+    setTimeout(() => {AutoHarvest()}, aharvtime*1000);
 }
 
 function saveGame() {
@@ -140,13 +144,17 @@ function saveGame() {
         ownedseeds: ownedseeds,
         plotCount: plotCount,
         timefert: timefert,
+        AutoPlots: aharvplots,
+        AutoTime: aharvtime,
         plots: plots.map(plot => ({
             planted: plot.planted,
             PlantedWith: plot.PlantedWith,
-            harvestTime: plot.harvestTime
+            harvestTime: plot.harvestTime,
+            harvestAble: plot.harvestAble
         }))
     };
     localStorage.setItem('farmingGameState', JSON.stringify(gameState));
+    console.log(gameState)
 }
 function loadGame() {
     const savedGame = localStorage.getItem('farmingGameState');
@@ -158,13 +166,11 @@ function loadGame() {
         ownedseeds = gameState.ownedseeds;
         plotCount = gameState.plotCount;
         timefert = gameState.timefert;
-
-        // Clear existing plots
+        aharvplots = gameState.AutoPlots;
+        aharvtime = gameState.AutoTime;
         plots = [];
         const plotsContainer = document.getElementById('plots');
         plotsContainer.innerHTML = '';
-        
-        // Restore plots
         gameState.plots.forEach((plotData, index) => {
             const plot = document.createElement('div');
             plot.classList.add('plot');
@@ -181,10 +187,9 @@ function loadGame() {
             }
             plotsContainer.appendChild(plot);
             plots.push({ element: plot, ...plotData });
+            updateProgress(index);
         });
-        
-        // Update UI elements
-        document.getElementById("CASH").innerText = `Money: ${money}`;
+        document.getElementById("CASH").innerText = `Money: ${money.toFixed(1)}`;
         document.getElementById("CURRENTSEED").innerText = currentSeed.name;
         document.getElementById("fertime").innerText = `Decrease growth time by 10% for $${(1 / (timefert / 1000)).toFixed(2)}`;
         document.getElementById("buyplotbtn").innerText = `Buy plot ${plotCount + 1} for ${(plotCount - 1) ** 2}`;
@@ -192,7 +197,7 @@ function loadGame() {
         alert('Game loaded successfully!');
     } else {
         alert('No saved game found.');
-        initPlots(); // Initialize plots if no saved game
+        initPlots();
     }
 }
 
@@ -201,7 +206,10 @@ document.addEventListener('DOMContentLoaded', () => {
     loadGame()
     document.getElementById("fertime").innerText = `Decrease growth time by 10% for $${(1 / (timefert / 1000)).toFixed(2)}`;
     document.getElementById("buyplotbtn").innerText = `Buy plot ${plotCount + 1} for ${(plotCount - 1) ** 2}`;
-    document.getElementById("CASH").innerText = `Money: ${money}`;
+    document.getElementById("CASH").innerText = `Money: ${money.toFixed(1)}`;
+    document.getElementById('autohartime').innertext = `Decrease Auto Harvest Time by 10 Percent: ${1000/aharvtime} Money`;
+    document.getElementById('autohar').innerText = `Auto Harvest Plot ${aharvplots+2} for $${(aharvplots+2)*100}`;
+    AutoHarvest()
 });
 
 setInterval(saveGame,60000);
