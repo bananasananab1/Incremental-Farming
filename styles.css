@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+#game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#plots {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 570px;
+}
+
+.plot {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+}
+
+.plot img {
+    width: 50px;
+    height: 50px;
+}
+
+.plot .progress-bar {
+    width: 80%;
+    height: 10px;
+    background-color: #ccc;
+    margin-top: 10px;
+}
+
+.plot .progress-bar .progress {
+    height: 100%;
+    background-color: #0f0;
+}
+
+#shop {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+#shopMenu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border: 2px solid #000;
+    padding: 20px;
+    z-index: 1000;
+}

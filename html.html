@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <p id="CASH"> money</p>
+    <p id = "CURRENTSEED">WHEAT</p>
+    <button onclick="toggleseedmenu()">seed menu</button>
+        <div id="game">
+        <div id="plots"></div>
+        <div id="shop">
+            <button onclick="toggleShop()">SHOP</button>
+        </div>
+    </div>
+    <div id="seedmenu" style="display: none;">
+        <h2>seed menu</h2>
+        <button onclick="toggleseedmenu()">close seed menu</button>
+        <button onclick="setseed('Wheat')">WHEAT</button>
+        <button id="Carrot"onclick="setseed('Carrot')">25 Cash</button>
+        <button id="Corn" onclick="setseed('Corn')">50 Cash</button>
+        <button id="Tomato"onclick="setseed('Tomato')">100 Cash</button>
+        <button id="Potato" onclick="setseed('Potato')">200 Cash</button>
+        <button id="Lettuce"onclick="setseed('Lettuce')">250 Cash</button>
+        <button id="Cucumber" onclick="setseed('Cucumber')">300 Cash</button>
+    </div>
+
+    <div id="shopMenu" style="display: none;">
+        <h2>Shop</h2>
+        <button onclick="toggleShop()">Close Shop</button>
+        <button id="buyplotbtn" onclick="buyplot()"> buy plot N</button>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
