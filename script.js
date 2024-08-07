@@ -1,6 +1,6 @@
 let plots = [];
 let currentSeed = { name: 'Wheat', cost: 1, gain: 1.5, time: 10000 };
-let money = 10000;
+let money = 10;
 let plotCount = 5;
 let timefert = 10;
 let aharvplots = -1
@@ -8,12 +8,16 @@ let aharvtime = 10
 let ownedseeds = ["Wheat"];
 const seedDB = { 
     Wheat:     {name: 'Wheat',      cost: 1,  gain: 1.5,time: 10000, shopbuy: 0   },
-    Carrot:    {name: 'Carrot',     cost: 2,  gain: 3,  time: 20000, shopbuy: 25  },
+    Carrot:    {name: 'Carrot',     cost: 2,  gain: 3.5,  time: 20000, shopbuy: 25  },
     Corn:      {name: 'Corn',       cost: 5,  gain: 9,  time: 30000, shopbuy: 50  },
     Tomato:    {name: 'Tomato',     cost: 10, gain: 17, time: 40000, shopbuy: 100 },
-    Potato:    {name: 'Potato',     cost: 15, gain: 28, time: 50000, shopbuy: 200 },
+    Potato:    {name: 'Potato',     cost: 15, gain: 30, time: 50000, shopbuy: 200 },
     Lettuce:   {name: 'Lettuce',    cost: 20, gain: 35, time: 60000, shopbuy: 250 },
     Cucumber:  {name: 'Cucumber',   cost: 25, gain: 45, time: 70000, shopbuy: 300 },
+    Strawberry: {name: 'Strawberry', cost: 50, gain: 95, time: 85000, shopbuy: 1000},
+    Blueberry:  {name: 'Blueberry',  cost: 100, gain: 174, time: 100000, shopbuy: 3000},
+    Raspberry:  {name: 'Raspberry',  cost: 200, gain: 507, time: 120000, shopbuy: 15000},
+    
     undefined: {name: 'undefined',  cost:null,gain: 1,  time: 1000,  shopbuy: null}// debug
 };
 
@@ -28,6 +32,7 @@ function setseed(name) {
         ownedseeds.push(name);
     }
     document.getElementById("CURRENTSEED").innerText = currentSeed.name;
+    document.getElementById("CASH").innerText = `Money: ${money.toFixed(1)}`;
     document.getElementById("SEEDINFO").innerText = `Cost: ${currentSeed.cost}, Gain: ${currentSeed.gain}, Time: ${currentSeed.time / 1000}s`;
 }
 
