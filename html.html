@@ -31,6 +31,7 @@
         <button id="fertime" onclick="fertilizer('time')">Decrease growth time by 10% for $100 </button>
         <button id="autohar" onclick="if(money > (aharvplots+2)*100 ){aharvplots += 1; money-=(aharvplots+2)*100;}; document.getElementById('CASH').innerText = `Money: ${money.toFixed(1)}`; document.getElementById('autohar').innerText = `Auto Harvest Plot ${aharvplots+2} for $${(aharvplots+2)*100};`"> Auto Harvest Plot 1</button>
         <button id="autohartime" onclick="if (money>(1000/aharvtime)){aharvtime -= (aharvtime/10); money -= 1000/aharvtime;}; document.getElementById('autohartime').innerText = `Decrease Auto Harvest Time by 10 Percent: ${(1000/aharvtime).toFixed(1)} Money`;">Decrease Auto Harvest Time by 10 Percent: 100 Money</button>
+        <button onclick="rebirth()">Rebirth (Reset with 2x Cash, 1.5x Grow Speed)</button>
     </div>
     
     <script src="script.js"></script>
